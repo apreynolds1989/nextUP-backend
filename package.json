@@ -1,0 +1,19 @@
+{
+  "name": "nextup-backend",
+  "version": "1.0.0",
+  "description": "Backend for nextUP web app",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "ts-node-dev --respawn --transpile-only src/app.ts"
+  },
+  "author": "Andrew Reynolds",
+  "license": "ISC",
+  "dependencies": {
+    "@types/express": "^4.17.13",
+    "@types/node": "^18.7.14",
+    "express": "^4.18.1",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^4.8.2"
+  }
+}
