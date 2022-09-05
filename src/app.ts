@@ -1,10 +1,8 @@
-import express, { Express, Request, Response, NextFunction } from 'express';
+import express, { Express, Request, Response } from 'express';
+import { loggerFunc } from './middleware/Logger';
 
 const app: Express = express();
-const loggerFunc = (req: Request, res: Response, next: NextFunction): void => {
-    console.log(`LOGGED at ${new Date}`);
-    next();
-};
+
 
 // const database: Database = FileDatabase;
 
