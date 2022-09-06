@@ -1,25 +1,25 @@
-import { TeamRosters, PlayerData, SkaterStats, GoalieStats } from '../../types';
+import { TeamRosters, PlayerData, SkaterStats, GoalieStats, WeeklyGames } from '../../types';
 
 export interface Database {
         // CRUD => Create, Retrieve, Update, Delete
 
     createWeeklyGames: () => void;
-    retrieveWeeklyGames: () => string[];
-    updateWeeklyGames: () => string[];
+    retrieveWeeklyGames: () => WeeklyGames[];
+    // updateWeeklyGames: () => string[];
 
-    createTeamRosters: () => void;
-    retrieveTeamRosters: () => TeamRosters;
-    updateTeamRosters: () => TeamRosters;
+    // createTeamRosters: () => void;
+    // retrieveTeamRosters: () => TeamRosters;
+    // updateTeamRosters: () => TeamRosters;
 
-    createPlayerData: () => void;
-    retrievePlayerData: () => PlayerData;
-    updatePlayerData: () => PlayerData;
+    // createPlayerData: () => void;
+    // retrievePlayerData: () => PlayerData;
+    // updatePlayerData: () => PlayerData;
 
-    createSkaterStats: () => void;
-    retrieveSkaterStats: () => SkaterStats;
-    updateSkaterStats: () => SkaterStats;
+    // createSkaterStats: () => void;
+    // retrieveSkaterStats: () => SkaterStats;
+    // updateSkaterStats: () => SkaterStats;
 
-    createGoalieStats: () => void;
-    retrieveGoalieStats: () => GoalieStats;
-    updateGoalieStats: () => GoalieStats;
+    // createGoalieStats: () => void;
+    // retrieveGoalieStats: () => GoalieStats;
+    // updateGoalieStats: () => GoalieStats;
 }

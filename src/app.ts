@@ -1,12 +1,30 @@
-import express, { Express, Request, Response } from 'express';
+import express, { Express, Request, Response, NextFunction } from 'express';
+import { Database } from './services/database/Database';
+import { WeeklyGames } from './types';
+import { FileDatabase } from './services/database/FileDatabase';
 import { loggerFunc } from './middleware/Logger';
 
 const app: Express = express();
 
-
-// const database: Database = FileDatabase;
+const database: Database = FileDatabase;
+const useDatabase = async (req: Request, res: Response, next: NextFunction) => {
+    database.createWeeklyGames();
+    let gamesArr = await database.retrieveWeeklyGames();
+    console.log(gamesArr);
+    next();
+}
 
 app.use(loggerFunc);
+
+app.use((req: Request, res: Response, next: NextFunction) => {
+    database.createWeeklyGames();
+    next();
+});
+
+app.use(async (req: Request, res: Response, next: NextFunction) => {
+    console.log(await database.retrieveWeeklyGames());
+    next();
+});
 
 app.get('/', (req: Request, res: Response) => {
     res.send('Hello World!')
