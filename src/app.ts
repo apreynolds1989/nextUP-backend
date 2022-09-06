@@ -7,12 +7,12 @@ import { loggerFunc } from './middleware/Logger';
 const app: Express = express();
 
 const database: Database = FileDatabase;
-const useDatabase = async (req: Request, res: Response, next: NextFunction) => {
-    database.createWeeklyGames();
-    let gamesArr = await database.retrieveWeeklyGames();
-    console.log(gamesArr);
-    next();
-}
+// const useDatabase = async (req: Request, res: Response, next: NextFunction) => {
+//     database.createWeeklyGames();
+//     let gamesArr = await database.retrieveWeeklyGames();
+//     console.log(gamesArr);
+//     next();
+// }
 
 let gamesArr: WeeklyGames[];
 

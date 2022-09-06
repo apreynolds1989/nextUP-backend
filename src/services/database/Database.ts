@@ -4,7 +4,7 @@ export interface Database {
         // CRUD => Create, Retrieve, Update, Delete
 
     createWeeklyGames: () => void;
-    retrieveWeeklyGames: () => WeeklyGames[];
+    retrieveWeeklyGames: () => Promise<WeeklyGames[]>;
     // updateWeeklyGames: () => string[];
 
     // createTeamRosters: () => void;
