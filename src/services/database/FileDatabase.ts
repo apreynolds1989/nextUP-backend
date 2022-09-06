@@ -40,7 +40,7 @@ export const FileDatabase: Database = {
                 return weeklyGames;
             })
             .catch((err) => {
-                console.log(err);
+                return [];
             })
         return weeklyGames;
     },

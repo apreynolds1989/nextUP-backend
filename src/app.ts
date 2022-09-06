@@ -14,6 +14,8 @@ const useDatabase = async (req: Request, res: Response, next: NextFunction) => {
     next();
 }
 
+let gamesArr: WeeklyGames[];
+
 app.use(loggerFunc);
 
 app.use((req: Request, res: Response, next: NextFunction) => {
@@ -22,12 +24,15 @@ app.use((req: Request, res: Response, next: NextFunction) => {
 });
 
 app.use(async (req: Request, res: Response, next: NextFunction) => {
-    console.log(await database.retrieveWeeklyGames());
+
+    await database.retrieveWeeklyGames().then((value) => {
+        gamesArr = value;
+    });
     next();
 });
 
 app.get('/', (req: Request, res: Response) => {
-    res.send('Hello World!')
+    res.send(gamesArr)
 });
 
 app.listen(3000, () => {
