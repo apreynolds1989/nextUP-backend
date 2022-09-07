@@ -1,6 +1,6 @@
 import express, { Express, Request, Response, NextFunction } from 'express';
 import { Database } from './services/database/Database';
-import { WeeklyGames } from './types';
+import { WeeklyGames, TeamsInfo } from './services/database/types';
 import { FileDatabase } from './services/database/FileDatabase';
 import { loggerFunc } from './middleware/Logger';
 
@@ -15,17 +15,31 @@ const database: Database = FileDatabase;
 // }
 
 let gamesArr: WeeklyGames[];
+let teamsArr: TeamsInfo[];
 
 app.use(loggerFunc);
 
-app.use((req: Request, res: Response, next: NextFunction) => {
-    database.createWeeklyGames();
+app.use(async (req: Request, res: Response, next: NextFunction) => {
+    await database.createTeamsInfo();
     next();
 });
 
 app.use(async (req: Request, res: Response, next: NextFunction) => {
+    await database.retrieveTeamsInfo().then((value) => {
+        console.log(`teamsArr: ${value}`);
+        teamsArr = value;
+    });
+    next();
+})
 
+app.use(async (req: Request, res: Response, next: NextFunction) => {
+    await database.createWeeklyGames();
+    next();
+});
+
+app.use(async (req: Request, res: Response, next: NextFunction) => {
     await database.retrieveWeeklyGames().then((value) => {
+        console.log(`gamesArr: ${value}`);
         gamesArr = value;
     });
     next();

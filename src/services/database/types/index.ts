@@ -1,4 +1,4 @@
-export * from './TeamRosters';
+export * from './TeamsInfo';
 export * from './PlayerData';
 export * from './SkaterStats';
 export * from './GoalieStats';
