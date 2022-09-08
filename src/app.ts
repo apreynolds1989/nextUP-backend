@@ -10,12 +10,12 @@ const app: Express = express();
 const database: Database = FileDatabase;
 // const useDatabase = async (req: Request, res: Response, next: NextFunction) => {
 //     database.createWeeklyGames();
-//     let gamesArr = await database.retrieveWeeklyGames();
-//     console.log(gamesArr);
+//     let datesArr = await database.retrieveWeeklyGames();
+//     console.log(datesArr);
 //     next();
 // }
 
-let gamesArr: WeeklyGames[];
+let datesArr: WeeklyGames[];
 let teamsArr: TeamsInfo[];
 // {
 //     teamAbrv: string;
@@ -61,8 +61,8 @@ app.use(async (req: Request, res: Response, next: NextFunction) => {
 
 app.use(async (req: Request, res: Response, next: NextFunction) => {
     await database.retrieveWeeklyGames().then((value) => {
-        // console.log(`gamesArr: ${value}`);
-        gamesArr = value;
+        // console.log(`datesArr: ${value}`);
+        datesArr = value;
     });
     next();
 });
@@ -73,7 +73,7 @@ app.use(async (req: Request, res: Response, next: NextFunction) => {
 });
 
 app.get('/', (req: Request, res: Response) => {
-    res.send(gamesArr);
+    res.send(datesArr);
 });
 
 app.listen(3000, () => {
