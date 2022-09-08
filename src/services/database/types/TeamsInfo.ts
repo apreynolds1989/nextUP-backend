@@ -1,10 +1,9 @@
-import { PlayerData } from "./PlayerData";
+import { PlayerData } from './PlayerData';
 
 export interface TeamsInfo {
     teamAbrv: string;
     teamName: string;
-    locatonName: string;
+    locationName: string;
     teamId: number;
     teamRoster: PlayerData[];
 }
-

@@ -1,7 +1,5 @@
+import { PlayerData } from './PlayerData';
+
 export interface PlayerArrs {
-    [index: number]: {
-        name: string;
-        id: number;
-        position: string;
-    }[];
+    [index: number]: PlayerData[];
 }

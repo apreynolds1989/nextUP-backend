@@ -1,4 +1,4 @@
-import { TeamsInfo, PlayerArrs, SkaterStats, GoalieStats, WeeklyGames } from './types';
+import { TeamsInfo, PlayerData, PlayerArrs, SkaterStats, GoalieStats, WeeklyGames } from './types';
 
 export interface Database {
     // CRUD => Create, Retrieve, Update, Delete
@@ -15,7 +15,7 @@ export interface Database {
     retrievePlayerArrs: () => Promise<PlayerArrs>;
     // updatePlayerData: () => PlayerData;
 
-    createSkaterStats: () => Promise<void>;
+    createSkaterStats: (skatersArr: PlayerData[], datesArr: WeeklyGames[]) => Promise<void>;
     // retrieveSkaterStats: () => SkaterStats;
     // updateSkaterStats: () => SkaterStats;
 
