@@ -1,21 +1,21 @@
-import { TeamsInfo, PlayerData, SkaterStats, GoalieStats, WeeklyGames } from './types';
+import { TeamsInfo, PlayerArrs, SkaterStats, GoalieStats, WeeklyGames } from './types';
 
 export interface Database {
-        // CRUD => Create, Retrieve, Update, Delete
+    // CRUD => Create, Retrieve, Update, Delete
 
     createWeeklyGames: () => Promise<void>;
     retrieveWeeklyGames: () => Promise<WeeklyGames[]>;
     // updateWeeklyGames: () => Promise<void>;
 
     createTeamsInfo: () => Promise<void>;
-    retrieveTeamsInfo: () => Promise<TeamsInfo>;
+    retrieveTeamsInfo: () => Promise<TeamsInfo[]>;
     // updateTeamRosters: () => TeamRosters;
 
-    // createPlayerData: () => void;
-    // retrievePlayerData: () => PlayerData;
+    createPlayerArrs: (TeamsArr: TeamsInfo[]) => Promise<void>;
+    retrievePlayerArrs: () => Promise<PlayerArrs>;
     // updatePlayerData: () => PlayerData;
 
-    // createSkaterStats: () => void;
+    createSkaterStats: () => Promise<void>;
     // retrieveSkaterStats: () => SkaterStats;
     // updateSkaterStats: () => SkaterStats;
 

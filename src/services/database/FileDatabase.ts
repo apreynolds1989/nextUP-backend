@@ -17,7 +17,7 @@ export const FileDatabase: Database = {
         let weeklyGames: DayObj[] = [];
         await axios
             .get(
-                'https://statsapi.web.nhl.com/api/v1/schedule?startDate=2022-01-02&endDate=2022-01-08'
+                'https://statsapi.web.nhl.com/api/v1/schedule?startDate=2022-01-06&endDate=2022-01-12'
             )
             .then((response: AxiosResponse) => {
                 let dates = response.data.dates;
@@ -120,7 +120,6 @@ export const FileDatabase: Database = {
     },
 
     async retrieveTeamsInfo() {
-        // Read from file 'weeklyGames.json'
         let myResult: any;
         await fs
             .readFile('src/dataFiles/teamsInfo.json', 'utf8')
@@ -133,4 +132,42 @@ export const FileDatabase: Database = {
             });
         return myResult;
     },
+
+    async createPlayerArrs(TeamsArr) {
+        interface Player {
+            name: string;
+            id: number;
+            position: string;
+        }
+        let playerArrs = [];
+        let skatersArr: Player[] = [];
+        let goaliesArr: Player[] = [];
+        TeamsArr.map((team) => {
+            // console.log(team.teamRoster);
+            team.teamRoster.map((player) => {
+                player.position === 'G' ? goaliesArr.push(player) : skatersArr.push(player);
+            });
+        });
+        playerArrs.push(skatersArr, goaliesArr);
+        await fs
+            .writeFile('src/dataFiles/playerArrs.json', JSON.stringify(playerArrs))
+            .catch((err) => console.log(err));
+    },
+
+    async retrievePlayerArrs() {
+        let myResult: any;
+        await fs
+            .readFile('src/dataFiles/playerArrs.json', 'utf8')
+            .then((result) => {
+                myResult = JSON.parse(result);
+                console.log(myResult);
+            })
+            .catch((err) => {
+                console.log(err);
+                return [];
+            });
+        return myResult;
+    },
+
+    async createSkaterStats() {},
 };

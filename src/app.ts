@@ -16,6 +16,17 @@ const database: Database = FileDatabase;
 
 let gamesArr: WeeklyGames[];
 let teamsArr: TeamsInfo[];
+// {
+//     teamAbrv: string;
+//     locatonName: string;
+//     teamName: string;
+//     teamId: number;
+//     teamRoster: {
+//         name: string;
+//         id: number;
+//         position: string;
+//     }[];
+// };
 
 app.use(loggerFunc);
 
@@ -26,11 +37,21 @@ app.use(async (req: Request, res: Response, next: NextFunction) => {
 
 app.use(async (req: Request, res: Response, next: NextFunction) => {
     await database.retrieveTeamsInfo().then((value) => {
-        console.log(`teamsArr: ${value}`);
+        // console.log(`teamsArr: ${value}`);
         teamsArr = value;
     });
     next();
-})
+});
+
+app.use(async (req: Request, res: Response, next: NextFunction) => {
+    await database.createPlayerArrs(teamsArr);
+    next();
+});
+
+app.use(async (req: Request, res: Response, next: NextFunction) => {
+    await database.retrievePlayerArrs();
+    next();
+});
 
 app.use(async (req: Request, res: Response, next: NextFunction) => {
     await database.createWeeklyGames();
@@ -39,14 +60,14 @@ app.use(async (req: Request, res: Response, next: NextFunction) => {
 
 app.use(async (req: Request, res: Response, next: NextFunction) => {
     await database.retrieveWeeklyGames().then((value) => {
-        console.log(`gamesArr: ${value}`);
+        // console.log(`gamesArr: ${value}`);
         gamesArr = value;
     });
     next();
 });
 
 app.get('/', (req: Request, res: Response) => {
-    res.send(gamesArr)
+    res.send(gamesArr);
 });
 
 app.listen(3000, () => {
