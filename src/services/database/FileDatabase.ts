@@ -5,7 +5,7 @@ import { AxiosError, AxiosResponse } from 'axios';
 const axios = require('axios').default;
 
 export const FileDatabase: Database = {
-    async createWeeklyGames() {
+    async createWeeklyGames(date1, date2) {
         interface GamesObj {
             home: number;
             away: number;
@@ -16,9 +16,7 @@ export const FileDatabase: Database = {
         }
         let weeklyGames: DayObj[] = [];
         await axios
-            .get(
-                'https://statsapi.web.nhl.com/api/v1/schedule?startDate=2022-01-06&endDate=2022-01-12'
-            )
+            .get(`https://statsapi.web.nhl.com/api/v1/schedule?startDate=${date1}&endDate=${date2}`)
             .then((response: AxiosResponse) => {
                 let dates = response.data.dates;
                 dates.map((day: any) => {

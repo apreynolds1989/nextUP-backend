@@ -3,7 +3,7 @@ import { TeamsInfo, PlayerArrs, SkaterStats, GoalieStats, WeeklyGames } from './
 export interface Database {
     // CRUD => Create, Retrieve, Update, Delete
 
-    createWeeklyGames: () => Promise<void>;
+    createWeeklyGames: (date1: string, date2: string) => Promise<void>;
     retrieveWeeklyGames: () => Promise<WeeklyGames[]>;
     // updateWeeklyGames: () => Promise<void>;
 

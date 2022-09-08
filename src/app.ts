@@ -3,6 +3,7 @@ import { Database } from './services/database/Database';
 import { WeeklyGames, TeamsInfo } from './services/database/types';
 import { FileDatabase } from './services/database/FileDatabase';
 import { loggerFunc } from './middleware/Logger';
+import { currentDate, endOfWeekDate } from './utilities/dates';
 
 const app: Express = express();
 
@@ -54,7 +55,7 @@ app.use(async (req: Request, res: Response, next: NextFunction) => {
 });
 
 app.use(async (req: Request, res: Response, next: NextFunction) => {
-    await database.createWeeklyGames();
+    await database.createWeeklyGames(currentDate, endOfWeekDate);
     next();
 });
 
@@ -63,6 +64,11 @@ app.use(async (req: Request, res: Response, next: NextFunction) => {
         // console.log(`gamesArr: ${value}`);
         gamesArr = value;
     });
+    next();
+});
+
+app.use(async (req: Request, res: Response, next: NextFunction) => {
+    await database.createSkaterStats();
     next();
 });
 
