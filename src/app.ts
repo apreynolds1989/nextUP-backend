@@ -1,6 +1,6 @@
 import express, { Express, Request, Response, NextFunction } from 'express';
 import { Database } from './services/database/Database';
-import { WeeklyGames, TeamsInfo, PlayerData } from './services/database/types';
+import { WeeklyGames, TeamsInfo, PlayerData, SkaterStats } from './services/database/types';
 import { FileDatabase } from './services/database/FileDatabase';
 import { loggerFunc } from './middleware/Logger';
 import { currentDate, endOfWeekDate } from './utilities/dates';
@@ -19,6 +19,7 @@ let datesArr: WeeklyGames[];
 let teamsArr: TeamsInfo[];
 let skatersArr: PlayerData[];
 let goaliesArr: PlayerData[];
+let skatersStats: SkaterStats[];
 // {
 //     teamAbrv: string;
 //     locatonName: string;
@@ -77,8 +78,19 @@ app.use(async (req: Request, res: Response, next: NextFunction) => {
     next();
 });
 
+app.use(async (req: Request, res: Response, next: NextFunction) => {
+    await database.retrieveSkatersStats().then((value) => {
+        // console.log(`datesArr: ${value}`);
+        skatersStats = value;
+        // console.log(skatersStats);
+    });
+    next();
+});
+
 app.get('/', (req: Request, res: Response) => {
-    res.send(datesArr);
+    let skatersNames: string[] = [];
+    skatersArr.map((skater) => skatersNames.push(skater.name));
+    res.send(skatersNames);
 });
 
 app.listen(3000, () => {

@@ -1,6 +1,7 @@
 import { Database } from './Database';
 import * as fs from 'fs/promises';
 import { AxiosError, AxiosResponse } from 'axios';
+import axiosRetry from 'axios-retry';
 import { PlayerData, SkaterStats, TeamsInfo, WeeklyGames } from './types';
 import {
     generateWeeklyGamesTally,
@@ -8,6 +9,12 @@ import {
 } from '../../utilities/generateGameTallys';
 
 const axios = require('axios').default;
+axiosRetry(axios, {
+    retries: 3,
+    onRetry: (retryCount, error, requestConfig) => {
+        console.log(`Request Config: ${requestConfig.url} -  Retry attempt # ${retryCount}`);
+    },
+});
 
 export const FileDatabase: Database = {
     async createWeeklyGames(date1, date2) {
@@ -154,6 +161,16 @@ export const FileDatabase: Database = {
 
     async createSkaterStats(skatersArr, datesArr) {
         let skatersStatsArr: SkaterStats[] = [];
+        // axios
+        //     .get(
+        //         'https://statsapi.web.nhl.com/api/v1/people/8481578/stats?stats=statsSingleSeason&season=20212022'
+        //     )
+        //     .then((response: AxiosResponse) => {
+        //         console.log(response);
+        //     })
+        //     .catch((err: AxiosError) => {
+        //         console.log(`THIS IS THE ERROR for Graeme Clarke: ${err}`);
+        //     });
         let statsPromises = await Promise.all(
             skatersArr.map(async (skater) => {
                 let id = skater.id;
@@ -161,29 +178,31 @@ export const FileDatabase: Database = {
                 let statsResponse = await axios
                     .get(url)
                     .then((response: AxiosResponse) => {
-                        // console.log(`THIS IS THE STATS RESPONSE: ${response.data}`);
+                        // console.log(`THIS IS THE STATS RESPONSE: ${response}`);
                         return response.data;
                     })
-                    .catch((err: AxiosError) =>
-                        console.log(`ERROR WHILE FETCHING STATS RESPONSE. ERROR: ${err}`)
-                    );
+                    .catch((err: AxiosError) => {
+                        console.log(
+                            `ERROR while fetching STATS RESPONSE for NAME: ${skater.name} ID: ${skater.id}. ERROR: ${err}`
+                        );
+                    });
                 return {
                     name: skater.name,
                     team: skater.teamAbrv,
                     teamId: skater.teamId,
-                    stats: statsResponse,
+                    playerStats: statsResponse,
                 };
             })
         );
 
         const statsResponses = await Promise.all(statsPromises);
         //console.log(statsResponses);
-        skatersStatsArr = await statsResponses.reduce(
+        skatersStatsArr = statsResponses.reduce(
             (playerArr: SkaterStats[], currentPlayer, index) => {
-                // console.log(currentPlayer.stats);
+                // console.log(`Logging: ${currentPlayer.name}`);
+                // console.log(currentPlayer.playerStats.stats);
                 let teamId = currentPlayer.teamId;
-                let statsArr = currentPlayer.stats.stats[0].splits;
-                // console.log(statsArr[0].stat.goals);
+                let statsArr = currentPlayer.playerStats.stats[0].splits;
                 let results: SkaterStats;
                 let weeklyGames = generateWeeklyGamesTally(datesArr, teamId);
                 let weeklyOffDayGames = generateWeeklyOffDayGamesTally(datesArr, teamId);
@@ -215,31 +234,6 @@ export const FileDatabase: Database = {
                             faceoffPercentage: statsArr[0].stat.faceOffPct,
                             penaltyMinutes: statsArr[0].stat.pim,
                         };
-                        // results.push(
-                        //     name,
-                        //     team,
-                        //     gamesPlayed,
-                        //     weeklyGames,
-                        //     weeklyOffDayGames,
-                        //     statsArr[0].stat.goals,
-                        //     statsArr[0].stat.assists,
-                        //     statsArr[0].stat.points,
-                        //     statsArr[0].stat.gameWinningGoals,
-                        //     statsArr[0].stat.points / gamesPlayed,
-                        //     statsArr[0].stat.timeOnIcePerGame,
-                        //     statsArr[0].stat.powerPlayGoals,
-                        //     statsArr[0].stat.powerPlayPoints,
-                        //     statsArr[0].stat.powerPlayTimeOnIcePerGame,
-                        //     statsArr[0].stat.shortHandedGoals,
-                        //     statsArr[0].stat.shortHandedPoints,
-                        //     statsArr[0].stat.shortHandedTimeOnIcePerGame,
-                        //     statsArr[0].stat.hits,
-                        //     statsArr[0].stat.blocked,
-                        //     statsArr[0].stat.shots,
-                        //     statsArr[0].stat.shotPct,
-                        //     statsArr[0].stat.faceOffPct,
-                        //     statsArr[0].stat.pim
-                        // );
                         playerArr.push(results);
                         return playerArr;
                     }
@@ -250,15 +244,24 @@ export const FileDatabase: Database = {
             },
             []
         );
-        //return skatersStatsArr;
-
-        // // console.log(statsResponse);
-        // let statsArr = statsResponse.stats[0].splits;
-        // // console.log(statsArr);
 
         await fs
             .writeFile('src/dataFiles/skatersStatsArr.json', JSON.stringify(skatersStatsArr))
             .catch((err) => console.log(err));
         //console.log(`THIS IS THE SKATERS STATS ARRAY: ${skatersStatsArr}`);
+    },
+
+    async retrieveSkatersStats() {
+        let myResult: any;
+        await fs
+            .readFile('src/dataFiles/skatersStatsArr.json', 'utf8')
+            .then((result) => {
+                myResult = JSON.parse(result);
+            })
+            .catch((err) => {
+                console.log(err);
+                return [];
+            });
+        return myResult;
     },
 };

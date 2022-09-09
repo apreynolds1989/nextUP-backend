@@ -16,7 +16,7 @@ export interface Database {
     // updatePlayerData: () => PlayerData;
 
     createSkaterStats: (skatersArr: PlayerData[], datesArr: WeeklyGames[]) => Promise<void>;
-    // retrieveSkaterStats: () => SkaterStats;
+    retrieveSkatersStats: () => Promise<SkaterStats[]>;
     // updateSkaterStats: () => SkaterStats;
 
     // createGoalieStats: () => void;
