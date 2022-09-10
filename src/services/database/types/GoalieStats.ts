@@ -1,4 +1,8 @@
 export interface GoalieStats {
+    name: string;
+    team: string;
+    weeklyGames: number;
+    weeklyOffDayGames: number;
     gamesPlayed: number;
     gamesStarted: number;
     wins: number;
@@ -9,6 +13,4 @@ export interface GoalieStats {
     savePercentage: number;
     goalsAgainst: number;
     goalsAgainstAverage: number;
-    weeklyGamesTally: number;
-    weeklyOffDayGamesTally: number;
 }

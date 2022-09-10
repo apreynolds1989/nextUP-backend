@@ -19,7 +19,7 @@ export interface Database {
     retrieveSkatersStats: () => Promise<SkaterStats[]>;
     // updateSkaterStats: () => SkaterStats;
 
-    // createGoalieStats: () => void;
-    // retrieveGoalieStats: () => GoalieStats;
+    createGoaliesStats: (goaliesArr: PlayerData[], datesArr: WeeklyGames[]) => Promise<void>;
+    retrieveGoaliesStats: () => Promise<GoalieStats[]>;
     // updateGoalieStats: () => GoalieStats;
 }

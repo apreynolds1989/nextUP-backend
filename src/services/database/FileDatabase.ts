@@ -2,12 +2,14 @@ import { Database } from './Database';
 import * as fs from 'fs/promises';
 import { AxiosError, AxiosResponse } from 'axios';
 import axiosRetry from 'axios-retry';
-import { PlayerData, SkaterStats, TeamsInfo, WeeklyGames } from './types';
+import { PlayerData, SkaterStats, GoalieStats, TeamsInfo, WeeklyGames } from './types';
 import {
     generateWeeklyGamesTally,
     generateWeeklyOffDayGamesTally,
 } from '../../utilities/generateGameTallys';
 
+// Axios with axios-retry to ensure any API calls that fail, get called again
+// Without retry, sometimes random calls to the stats API fail
 const axios = require('axios').default;
 axiosRetry(axios, {
     retries: 3,
@@ -161,16 +163,6 @@ export const FileDatabase: Database = {
 
     async createSkaterStats(skatersArr, datesArr) {
         let skatersStatsArr: SkaterStats[] = [];
-        // axios
-        //     .get(
-        //         'https://statsapi.web.nhl.com/api/v1/people/8481578/stats?stats=statsSingleSeason&season=20212022'
-        //     )
-        //     .then((response: AxiosResponse) => {
-        //         console.log(response);
-        //     })
-        //     .catch((err: AxiosError) => {
-        //         console.log(`THIS IS THE ERROR for Graeme Clarke: ${err}`);
-        //     });
         let statsPromises = await Promise.all(
             skatersArr.map(async (skater) => {
                 let id = skater.id;
@@ -255,6 +247,93 @@ export const FileDatabase: Database = {
         let myResult: any;
         await fs
             .readFile('src/dataFiles/skatersStatsArr.json', 'utf8')
+            .then((result) => {
+                myResult = JSON.parse(result);
+            })
+            .catch((err) => {
+                console.log(err);
+                return [];
+            });
+        return myResult;
+    },
+
+    async createGoaliesStats(goaliesArr, datesArr) {
+        let goaliesStatsArr: GoalieStats[] = [];
+        let statsPromises = await Promise.all(
+            goaliesArr.map(async (goalie) => {
+                let id = goalie.id;
+                let url = `https://statsapi.web.nhl.com/api/v1/people/${id}/stats?stats=statsSingleSeason&season=20212022`;
+                let statsResponse = await axios
+                    .get(url)
+                    .then((response: AxiosResponse) => {
+                        // console.log(`THIS IS THE STATS RESPONSE: ${response}`);
+                        return response.data;
+                    })
+                    .catch((err: AxiosError) => {
+                        console.log(
+                            `ERROR while fetching STATS RESPONSE for NAME: ${goalie.name} ID: ${goalie.id}. ERROR: ${err}`
+                        );
+                    });
+                return {
+                    name: goalie.name,
+                    team: goalie.teamAbrv,
+                    teamId: goalie.teamId,
+                    playerStats: statsResponse,
+                };
+            })
+        );
+
+        const statsResponses = await Promise.all(statsPromises);
+        //console.log(statsResponses);
+        goaliesStatsArr = statsResponses.reduce(
+            (playerArr: GoalieStats[], currentPlayer, index) => {
+                // console.log(`Logging: ${currentPlayer.name}`);
+                // console.log(currentPlayer.playerStats.stats);
+                let teamId = currentPlayer.teamId;
+                let statsArr = currentPlayer.playerStats.stats[0].splits;
+                let results: GoalieStats;
+                let weeklyGames = generateWeeklyGamesTally(datesArr, teamId);
+                let weeklyOffDayGames = generateWeeklyOffDayGamesTally(datesArr, teamId);
+                if (statsArr.length > 0) {
+                    let gamesPlayed = statsArr[0].stat.games;
+                    if (gamesPlayed > 0) {
+                        results = {
+                            name: currentPlayer.name,
+                            team: currentPlayer.team,
+                            weeklyGames: weeklyGames,
+                            weeklyOffDayGames: weeklyOffDayGames,
+                            gamesPlayed: gamesPlayed,
+                            gamesStarted: statsArr[0].stat.gamesStarted,
+                            wins: statsArr[0].stat.wins,
+                            loses: statsArr[0].stat.losses,
+                            shutouts: statsArr[0].stat.shutouts,
+                            shotsAgainst: statsArr[0].stat.shotsAgainst,
+                            saves: statsArr[0].stat.saves,
+                            savePercentage: statsArr[0].stat.savePercentage,
+                            goalsAgainst: statsArr[0].stat.goalsAgainst,
+                            goalsAgainstAverage: statsArr[0].stat.goalAgainstAverage,
+                        };
+                        playerArr.push(results);
+                        return playerArr;
+                    }
+                    return playerArr;
+                }
+                // console.log(`THIS IS THE PLAYERS ARRAY: ${playerArr}`);
+                return playerArr;
+            },
+            []
+        );
+
+        await fs
+            .writeFile('src/dataFiles/goaliesStatsArr.json', JSON.stringify(goaliesStatsArr))
+            .catch((err) => console.log(err));
+        //console.log(`THIS IS THE SKATERS STATS ARRAY: ${skatersStatsArr}`);
+    },
+
+    async retrieveGoaliesStats() {
+        let myResult: any;
+        await fs
+            .readFile('src/dataFiles/goaliesStatsArr.json', 'utf8')
             .then((result) => {
                 myResult = JSON.parse(result);
             })

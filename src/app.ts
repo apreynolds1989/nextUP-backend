@@ -1,6 +1,12 @@
 import express, { Express, Request, Response, NextFunction } from 'express';
 import { Database } from './services/database/Database';
-import { WeeklyGames, TeamsInfo, PlayerData, SkaterStats } from './services/database/types';
+import {
+    WeeklyGames,
+    TeamsInfo,
+    PlayerData,
+    SkaterStats,
+    GoalieStats,
+} from './services/database/types';
 import { FileDatabase } from './services/database/FileDatabase';
 import { loggerFunc } from './middleware/Logger';
 import { currentDate, endOfWeekDate } from './utilities/dates';
@@ -20,19 +26,22 @@ let teamsArr: TeamsInfo[];
 let skatersArr: PlayerData[];
 let goaliesArr: PlayerData[];
 let skatersStats: SkaterStats[];
-// {
-//     teamAbrv: string;
-//     locatonName: string;
-//     teamName: string;
-//     teamId: number;
-//     teamRoster: {
-//         name: string;
-//         id: number;
-//         position: string;
-//     }[];
-// };
+let goaliesStats: GoalieStats[];
 
 app.use(loggerFunc);
+
+app.use(async (req: Request, res: Response, next: NextFunction) => {
+    await database.createWeeklyGames(currentDate, endOfWeekDate);
+    next();
+});
+
+app.use(async (req: Request, res: Response, next: NextFunction) => {
+    await database.retrieveWeeklyGames().then((value) => {
+        // console.log(`datesArr: ${value}`);
+        datesArr = value;
+    });
+    next();
+});
 
 app.use(async (req: Request, res: Response, next: NextFunction) => {
     await database.createTeamsInfo();
@@ -61,36 +70,34 @@ app.use(async (req: Request, res: Response, next: NextFunction) => {
 });
 
 app.use(async (req: Request, res: Response, next: NextFunction) => {
-    await database.createWeeklyGames(currentDate, endOfWeekDate);
-    next();
-});
-
-app.use(async (req: Request, res: Response, next: NextFunction) => {
-    await database.retrieveWeeklyGames().then((value) => {
-        // console.log(`datesArr: ${value}`);
-        datesArr = value;
-    });
-    next();
-});
-
-app.use(async (req: Request, res: Response, next: NextFunction) => {
     await database.createSkaterStats(skatersArr, datesArr);
     next();
 });
 
 app.use(async (req: Request, res: Response, next: NextFunction) => {
     await database.retrieveSkatersStats().then((value) => {
-        // console.log(`datesArr: ${value}`);
         skatersStats = value;
-        // console.log(skatersStats);
+    });
+    next();
+});
+
+app.use(async (req: Request, res: Response, next: NextFunction) => {
+    await database.createGoaliesStats(goaliesArr, datesArr);
+    next();
+});
+
+app.use(async (req: Request, res: Response, next: NextFunction) => {
+    await database.retrieveGoaliesStats().then((value) => {
+        goaliesStats = value;
     });
     next();
 });
 
 app.get('/', (req: Request, res: Response) => {
-    let skatersNames: string[] = [];
-    skatersArr.map((skater) => skatersNames.push(skater.name));
-    res.send(skatersNames);
+    // let skatersNames: string[] = [];
+    // skatersArr.map((skater) => skatersNames.push(skater.name));
+    // res.send(skatersNames);
+    res.send(goaliesStats);
 });
 
 app.listen(3000, () => {
