@@ -19,6 +19,9 @@ axiosRetry(axios, {
 });
 
 export const FileDatabase: Database = {
+    // Generate an array of Game Objects for each day of the given week from the schedule API
+    // Each game object lists the teamId for both the home and away teams
+    // Dates handed in from dates.ts file where they are dynamically generated
     async createWeeklyGames(date1, date2) {
         interface GamesObj {
             home: number;
@@ -44,7 +47,6 @@ export const FileDatabase: Database = {
                 return weeklyGames;
             })
             .then((weeklyGames: WeeklyGames[]) => {
-                // Write to file 'players.json'
                 fs.writeFile('src/dataFiles/weeklyGames.json', JSON.stringify(weeklyGames)).catch(
                     (err) => {
                         console.log(err);
@@ -71,6 +73,10 @@ export const FileDatabase: Database = {
         return myResult;
     },
 
+    // Generate an Array of Team Objects from the teams API
+    // Each Team response is mapped over to access the team roster
+    // Team's teamAbrv, locationName, teamName, teamId and player info are pushed into an array
+    // The list of teams array is written to a 'teamsInfo.json' file
     async createTeamsInfo() {
         let listOfTeams: TeamsInfo[] = [];
         await axios
@@ -80,8 +86,6 @@ export const FileDatabase: Database = {
 
                 teamsData.map((team: any) => {
                     let thisRoster: PlayerData[] = [];
-                    // console.log(team.roster.roster);
-                    // team.roster.roster.map((player: any) => console.log(player))
                     team.roster.roster.map((player: any) =>
                         thisRoster.push({
                             name: player.person.fullName,
@@ -108,7 +112,6 @@ export const FileDatabase: Database = {
                 return [];
             })
             .then((listOfTeams: TeamsInfo[]) => {
-                // Write to file 'players.json'
                 fs.writeFile('src/dataFiles/teamsInfo.json', JSON.stringify(listOfTeams)).catch(
                     (err) => {
                         console.log(err);
@@ -131,6 +134,9 @@ export const FileDatabase: Database = {
         return myResult;
     },
 
+    // Use the previously generated Teams Array to access each player off each roster
+    // Players are split into skatersArr and goaliesArr based on their position
+    // Returns an Array which contains the skatersArr and goaliesArr
     async createPlayerArrs(TeamsArr) {
         let playerArrs = [];
         let skatersArr: PlayerData[] = [];
@@ -161,6 +167,11 @@ export const FileDatabase: Database = {
         return myResult;
     },
 
+    // Takes in the previously generated skatersArr and the weeklyGames Array
+    // Generate stats for every active NHL non-goalie player from the stats API
+    // Each player requires a unique API call based on their id, calls are made al at once with Promise.all
+    // After Promises are returned, each player is mapped over and their stats Object is pushed to an Array
+    // the stats array is then written to a 'skatersStatsArr.json' file
     async createSkaterStats(skatersArr, datesArr) {
         let skatersStatsArr: SkaterStats[] = [];
         let statsPromises = await Promise.all(
@@ -170,7 +181,6 @@ export const FileDatabase: Database = {
                 let statsResponse = await axios
                     .get(url)
                     .then((response: AxiosResponse) => {
-                        // console.log(`THIS IS THE STATS RESPONSE: ${response}`);
                         return response.data;
                     })
                     .catch((err: AxiosError) => {
@@ -188,11 +198,9 @@ export const FileDatabase: Database = {
         );
 
         const statsResponses = await Promise.all(statsPromises);
-        //console.log(statsResponses);
         skatersStatsArr = statsResponses.reduce(
             (playerArr: SkaterStats[], currentPlayer, index) => {
                 // console.log(`Logging: ${currentPlayer.name}`);
-                // console.log(currentPlayer.playerStats.stats);
                 let teamId = currentPlayer.teamId;
                 let statsArr = currentPlayer.playerStats.stats[0].splits;
                 let results: SkaterStats;
@@ -231,7 +239,6 @@ export const FileDatabase: Database = {
                     }
                     return playerArr;
                 }
-                // console.log(`THIS IS THE PLAYERS ARRAY: ${playerArr}`);
                 return playerArr;
             },
             []
@@ -240,7 +247,6 @@ export const FileDatabase: Database = {
         await fs
             .writeFile('src/dataFiles/skatersStatsArr.json', JSON.stringify(skatersStatsArr))
             .catch((err) => console.log(err));
-        //console.log(`THIS IS THE SKATERS STATS ARRAY: ${skatersStatsArr}`);
     },
 
     async retrieveSkatersStats() {
@@ -257,6 +263,11 @@ export const FileDatabase: Database = {
         return myResult;
     },
 
+    // Takes in the previously generated goaliesArr and the weeklyGames Array
+    // Generate stats for every active NHL goalie from the stats API
+    // Each goalie requires a unique API call based on their id, calls are made al at once with Promise.all
+    // After Promises are returned, each goalie is mapped over and their stats Object is pushed to an Array
+    // the stats array is then written to a 'goaliesStatsArr.json' file
     async createGoaliesStats(goaliesArr, datesArr) {
         let goaliesStatsArr: GoalieStats[] = [];
         let statsPromises = await Promise.all(
@@ -266,7 +277,6 @@ export const FileDatabase: Database = {
                 let statsResponse = await axios
                     .get(url)
                     .then((response: AxiosResponse) => {
-                        // console.log(`THIS IS THE STATS RESPONSE: ${response}`);
                         return response.data;
                     })
                     .catch((err: AxiosError) => {
@@ -284,11 +294,9 @@ export const FileDatabase: Database = {
         );
 
         const statsResponses = await Promise.all(statsPromises);
-        //console.log(statsResponses);
         goaliesStatsArr = statsResponses.reduce(
             (playerArr: GoalieStats[], currentPlayer, index) => {
                 // console.log(`Logging: ${currentPlayer.name}`);
-                // console.log(currentPlayer.playerStats.stats);
                 let teamId = currentPlayer.teamId;
                 let statsArr = currentPlayer.playerStats.stats[0].splits;
                 let results: GoalieStats;
@@ -318,7 +326,6 @@ export const FileDatabase: Database = {
                     }
                     return playerArr;
                 }
-                // console.log(`THIS IS THE PLAYERS ARRAY: ${playerArr}`);
                 return playerArr;
             },
             []
@@ -327,7 +334,6 @@ export const FileDatabase: Database = {
         await fs
             .writeFile('src/dataFiles/goaliesStatsArr.json', JSON.stringify(goaliesStatsArr))
             .catch((err) => console.log(err));
-        //console.log(`THIS IS THE SKATERS STATS ARRAY: ${skatersStatsArr}`);
     },
 
     async retrieveGoaliesStats() {
