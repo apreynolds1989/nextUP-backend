@@ -4,3 +4,4 @@ export * from './SkaterStats';
 export * from './GoalieStats';
 export * from './WeeklyGames';
 export * from './PlayerArrs';
+export * from './GamesObj';

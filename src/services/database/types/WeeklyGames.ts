@@ -1,7 +1,6 @@
+import { GamesObj } from './GamesObj';
+
 export interface WeeklyGames {
     date: string;
-    games: {
-        home: number;
-        away: number;
-    }[];
+    games: GamesObj[];
 }

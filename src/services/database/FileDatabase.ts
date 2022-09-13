@@ -60,17 +60,20 @@ export const FileDatabase: Database = {
     },
 
     async retrieveWeeklyGames() {
-        let myResult: any;
-        await fs
-            .readFile('src/dataFiles/weeklyGames.json', 'utf8')
-            .then((result) => {
-                myResult = JSON.parse(result);
-            })
-            .catch((err) => {
-                console.log(err);
-                return [];
-            });
-        return myResult;
+        // let myResult: any;
+        // await fs
+        //     .readFile('src/dataFiles/weeklyGames.json', 'utf8')
+        //     .then((result) => {
+        //         myResult = JSON.parse(result);
+        //     })
+        //     .catch((err) => {
+        //         console.log(err);
+        //         return [];
+        //     });
+        // return myResult;
+        const result = await fs.readFile();
+
+        return result ? JSON.parse(result) : [];
     },
 
     // Generate an Array of Team Objects from the teams API
