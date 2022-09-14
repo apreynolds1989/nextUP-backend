@@ -27,7 +27,7 @@ const database: Database = FileDatabase;
 //     next();
 // }
 
-setInterval(async () => {
+const main = async () => {
     const api: Apis = nhlApi;
 
     // Get initial data from NHL api
@@ -76,7 +76,13 @@ setInterval(async () => {
     database.createWeeklyGamesFile(gamesArr);
     database.createSkaterStatsFile(skaterStatsArr);
     database.createGoaliesStatsFile(goalieStatsArr);
+};
+
+setInterval(async () => {
+    main();
 }, 1000 * 60 * 60 * 24);
+
+main();
 
 app.use(loggerFunc);
 

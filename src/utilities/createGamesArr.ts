@@ -9,6 +9,7 @@ export const createGamesArr = (datesResponse: AxiosResponse) => {
         let thisDaysGames: GamesObj[] = [];
         games.map((game: any) =>
             thisDaysGames.push({
+                time: game.gameDate,
                 homeId: game.teams.home.team.id,
                 homeName: game.teams.home.team.name,
                 awayId: game.teams.away.team.id,
