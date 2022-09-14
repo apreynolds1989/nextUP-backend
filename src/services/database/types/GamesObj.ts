@@ -1,4 +1,6 @@
 export interface GamesObj {
-    home: number;
-    away: number;
+    homeId: number;
+    homeName: string;
+    awayId: number;
+    awayName: string;
 }

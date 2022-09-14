@@ -27,85 +27,6 @@ const database: Database = FileDatabase;
 //     next();
 // }
 
-let datesArr: WeeklyGames[];
-let teamsArr: TeamsInfo[];
-let skatersArr: PlayerData[];
-let goaliesArr: PlayerData[];
-let skatersStats: SkaterStats[];
-let goaliesStats: GoalieStats[];
-
-// app.use(loggerFunc);
-
-// app.use(async (req: Request, res: Response, next: NextFunction) => {
-//     await database.createWeeklyGames(currentDate, endOfWeekDate);
-//     next();
-// });
-
-// app.use(async (req: Request, res: Response, next: NextFunction) => {
-//     await database.retrieveWeeklyGames().then((value) => {
-//         // console.log(`datesArr: ${value}`);
-//         datesArr = value;
-//     });
-//     next();
-// });
-
-// app.use(async (req: Request, res: Response, next: NextFunction) => {
-//     await database.createTeamsInfo();
-//     next();
-// });
-
-// app.use(async (req: Request, res: Response, next: NextFunction) => {
-//     await database.retrieveTeamsInfo().then((value) => {
-//         // console.log(`teamsArr: ${value}`);
-//         teamsArr = value;
-//     });
-//     next();
-// });
-
-// app.use(async (req: Request, res: Response, next: NextFunction) => {
-//     await database.createPlayerArrs(teamsArr);
-//     next();
-// });
-
-// app.use(async (req: Request, res: Response, next: NextFunction) => {
-//     await database.retrievePlayerArrs().then((value) => {
-//         skatersArr = value[0];
-//         goaliesArr = value[1];
-//     });
-//     next();
-// });
-
-// app.use(async (req: Request, res: Response, next: NextFunction) => {
-//     await database.createSkaterStats(skatersArr, datesArr);
-//     next();
-// });
-
-// app.use(async (req: Request, res: Response, next: NextFunction) => {
-//     await database.retrieveSkatersStats().then((value) => {
-//         skatersStats = value;
-//     });
-//     next();
-// });
-
-// app.use(async (req: Request, res: Response, next: NextFunction) => {
-//     await database.createGoaliesStats(goaliesArr, datesArr);
-//     next();
-// });
-
-// app.use(async (req: Request, res: Response, next: NextFunction) => {
-//     await database.retrieveGoaliesStats().then((value) => {
-//         goaliesStats = value;
-//     });
-//     next();
-// });
-
-// app.get('/', (req: Request, res: Response) => {
-//     // let skatersNames: string[] = [];
-//     // skatersArr.map((skater) => skatersNames.push(skater.name));
-//     // res.send(skatersNames);
-//     res.send(goaliesStats);
-// });
-
 setInterval(async () => {
     const api: Apis = nhlApi;
 
@@ -145,16 +66,31 @@ setInterval(async () => {
     });
 
     // Format weeklyGames to set up gamesArr
-    const gamesArr = createGamesArr(weeklyGamesResponse);
+    const gamesArr: WeeklyGames[] = createGamesArr(weeklyGamesResponse);
 
     // Format response Arrays to create skatersStatsArr and goaliesStatsArr
     const skaterStatsArr: SkaterStats[] = createSkaterStats(skatersStatsResponseArr, gamesArr);
     const goalieStatsArr: GoalieStats[] = createGoalieStats(goaliesStatsResponseArr, gamesArr);
-    console.log(goalieStatsArr[33]);
 
     // Store it in our database
-    //database.createPlayerStats(playerStats);
-}, 10000);
+    database.createWeeklyGamesFile(gamesArr);
+    database.createSkaterStatsFile(skaterStatsArr);
+    database.createGoaliesStatsFile(goalieStatsArr);
+}, 1000 * 60 * 60 * 24);
+
+app.use(loggerFunc);
+
+app.get('/', async (req: Request, res: Response) => {
+    res.send(await database.retrieveWeeklyGames());
+});
+
+app.get('/skaters', async (req: Request, res: Response) => {
+    res.send(await database.retrieveSkatersStats());
+});
+
+app.get('/goalies', async (req: Request, res: Response) => {
+    res.send(await database.retrieveGoaliesStats());
+});
 
 app.listen(3000, () => {
     console.log(`Application listening at http://localhost:3000`);

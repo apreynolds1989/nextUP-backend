@@ -3,23 +3,12 @@ import { TeamsInfo, PlayerData, PlayerArrs, SkaterStats, GoalieStats, WeeklyGame
 export interface Database {
     // CRUD => Create, Retrieve, Update, Delete
 
-    createWeeklyGames: (date1: string, date2: string) => Promise<void>;
+    createWeeklyGamesFile: (datesArr: WeeklyGames[]) => void;
     retrieveWeeklyGames: () => Promise<WeeklyGames[]>;
-    // updateWeeklyGames: () => Promise<void>;
 
-    createTeamsInfo: () => Promise<void>;
-    retrieveTeamsInfo: () => Promise<TeamsInfo[]>;
-    // updateTeamRosters: () => TeamRosters;
-
-    createPlayerArrs: (TeamsArr: TeamsInfo[]) => Promise<void>;
-    retrievePlayerArrs: () => Promise<PlayerArrs>;
-    // updatePlayerData: () => PlayerData;
-
-    createSkaterStats: (skatersArr: PlayerData[], datesArr: WeeklyGames[]) => Promise<void>;
+    createSkaterStatsFile: (skatersStatsArr: SkaterStats[]) => void;
     retrieveSkatersStats: () => Promise<SkaterStats[]>;
-    // updateSkaterStats: () => SkaterStats;
 
-    createGoaliesStats: (goaliesArr: PlayerData[], datesArr: WeeklyGames[]) => Promise<void>;
+    createGoaliesStatsFile: (goaliesStatsArr: GoalieStats[]) => void;
     retrieveGoaliesStats: () => Promise<GoalieStats[]>;
-    // updateGoalieStats: () => GoalieStats;
 }
