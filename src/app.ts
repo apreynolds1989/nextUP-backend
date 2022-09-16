@@ -16,6 +16,7 @@ import { Apis } from './services/apis/Apis';
 import { createTeamsArr } from './utilities/createTeamsArr';
 import { createGamesArr } from './utilities/createGamesArr';
 import { createGoalieStats, createSkaterStats } from './utilities/generateStats';
+import { createTeamSchedulesArr } from './utilities/createTeamSchedulesArr';
 
 const app: Express = express();
 
@@ -68,12 +69,16 @@ const main = async () => {
     // Format weeklyGames to set up gamesArr
     const gamesArr: WeeklyGames[] = createGamesArr(weeklyGamesResponse);
 
+    // Format teamsArr and gamesArr to set up Team's Schedules File
+    const teamsSchedules = createTeamSchedulesArr(teamsArr, gamesArr);
+
     // Format response Arrays to create skatersStatsArr and goaliesStatsArr
     const skaterStatsArr: SkaterStats[] = createSkaterStats(skatersStatsResponseArr, gamesArr);
     const goalieStatsArr: GoalieStats[] = createGoalieStats(goaliesStatsResponseArr, gamesArr);
 
     // Store it in our database
     database.createWeeklyGamesFile(gamesArr);
+    database.createTeamsSchedulesFile(teamsSchedules);
     database.createSkaterStatsFile(skaterStatsArr);
     database.createGoaliesStatsFile(goalieStatsArr);
 };

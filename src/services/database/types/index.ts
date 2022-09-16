@@ -5,3 +5,4 @@ export * from './GoalieStats';
 export * from './WeeklyGames';
 export * from './PlayerArrs';
 export * from './GamesObj';
+export * from './TeamsSchedule';

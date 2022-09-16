@@ -24,6 +24,17 @@ export const FileDatabase: Database = {
         return result ? JSON.parse(result) : [];
     },
 
+    createTeamsSchedulesFile(teamsSchedulesArr) {
+        fs.writeFile('src/dataFiles/teamsSchedules.json', JSON.stringify(teamsSchedulesArr)).catch(
+            (err) => console.log(err)
+        );
+    },
+
+    async retrieveTeamsSchedules() {
+        const result = await fs.readFile('src/dataFiles/teamsSchedules.json', 'utf8');
+        return result ? JSON.parse(result) : [];
+    },
+
     createSkaterStatsFile(skatersStatsArr) {
         fs.writeFile('src/dataFiles/skatersStatsArr.json', JSON.stringify(skatersStatsArr)).catch(
             (err) => console.log(err)
