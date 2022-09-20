@@ -13,10 +13,10 @@ axiosRetry(axios, {
 });
 
 export const FileDatabase: Database = {
-    createWeeklyGamesFile(datesArr) {
-        fs.writeFile('src/dataFiles/weeklyGames.json', JSON.stringify(datesArr)).catch((err) =>
-            console.log(err)
-        );
+    async createWeeklyGamesFile(datesArr) {
+        await fs
+            .writeFile('src/dataFiles/weeklyGames.json', JSON.stringify(datesArr))
+            .catch((err) => console.log(err));
     },
 
     async retrieveWeeklyGames() {
@@ -24,10 +24,10 @@ export const FileDatabase: Database = {
         return result ? JSON.parse(result) : [];
     },
 
-    createTeamsSchedulesFile(teamsSchedulesArr) {
-        fs.writeFile('src/dataFiles/teamsSchedules.json', JSON.stringify(teamsSchedulesArr)).catch(
-            (err) => console.log(err)
-        );
+    async createTeamsSchedulesFile(teamsSchedulesArr) {
+        await fs
+            .writeFile('src/dataFiles/teamsSchedules.json', JSON.stringify(teamsSchedulesArr))
+            .catch((err) => console.log(err));
     },
 
     async retrieveTeamsSchedules() {
@@ -35,10 +35,10 @@ export const FileDatabase: Database = {
         return result ? JSON.parse(result) : [];
     },
 
-    createSkaterStatsFile(skatersStatsArr) {
-        fs.writeFile('src/dataFiles/skatersStatsArr.json', JSON.stringify(skatersStatsArr)).catch(
-            (err) => console.log(err)
-        );
+    async createSkaterStatsFile(skatersStatsArr) {
+        await fs
+            .writeFile('src/dataFiles/skatersStatsArr.json', JSON.stringify(skatersStatsArr))
+            .catch((err) => console.log(err));
     },
 
     async retrieveSkatersStats() {
@@ -46,10 +46,10 @@ export const FileDatabase: Database = {
         return result ? JSON.parse(result) : [];
     },
 
-    createGoaliesStatsFile(goaliesStatsArr) {
-        fs.writeFile('src/dataFiles/goaliesStatsArr.json', JSON.stringify(goaliesStatsArr)).catch(
-            (err) => console.log(err)
-        );
+    async createGoaliesStatsFile(goaliesStatsArr) {
+        await fs
+            .writeFile('src/dataFiles/goaliesStatsArr.json', JSON.stringify(goaliesStatsArr))
+            .catch((err) => console.log(err));
     },
 
     async retrieveGoaliesStats() {

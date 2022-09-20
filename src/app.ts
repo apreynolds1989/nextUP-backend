@@ -2,7 +2,6 @@ import express, { Express, Request, Response, NextFunction } from 'express';
 import { Database } from './services/database/Database';
 import {
     WeeklyGames,
-    TeamsInfo,
     PlayerData,
     SkaterStats,
     GoalieStats,
@@ -21,12 +20,6 @@ import { createTeamSchedulesArr } from './utilities/createTeamSchedulesArr';
 const app: Express = express();
 
 const database: Database = FileDatabase;
-// const useDatabase = async (req: Request, res: Response, next: NextFunction) => {
-//     database.createWeeklyGames();
-//     let datesArr = await database.retrieveWeeklyGames();
-//     console.log(datesArr);
-//     next();
-// }
 
 const main = async () => {
     const api: Apis = nhlApi;
@@ -43,7 +36,7 @@ const main = async () => {
     });
 
     // Get player stats data from NHL api
-    const playersStatsResponseArr = await Promise.all(
+    const playersStatsPromiseArr = await Promise.allSettled(
         playersArr.map(async (skater) => {
             const thisResponse = await api.getPlayerStats(skater);
             return {
@@ -56,6 +49,17 @@ const main = async () => {
             };
         })
     );
+    const playersStatsResponseArr = playersStatsPromiseArr
+        .filter(
+            (res): res is PromiseFulfilledResult<StatsResponsePlayerData> =>
+                res.status === 'fulfilled'
+        )
+        .map((res) => res.value);
+
+    const failedPlayersStatsResponseArr = playersStatsPromiseArr
+        .filter((res): res is PromiseRejectedResult => res.status === 'rejected')
+        .map((res) => res.reason);
+    console.log(failedPlayersStatsResponseArr);
 
     // Split playerStatsResponseArr into skatersStatsResponseArr and goaliesStatsResponseArr
     const skatersStatsResponseArr: StatsResponsePlayerData[] = [];
@@ -77,15 +81,13 @@ const main = async () => {
     const goalieStatsArr: GoalieStats[] = createGoalieStats(goaliesStatsResponseArr, gamesArr);
 
     // Store it in our database
-    database.createWeeklyGamesFile(gamesArr);
-    database.createTeamsSchedulesFile(teamsSchedules);
-    database.createSkaterStatsFile(skaterStatsArr);
-    database.createGoaliesStatsFile(goalieStatsArr);
+    await database.createWeeklyGamesFile(gamesArr);
+    await database.createTeamsSchedulesFile(teamsSchedules);
+    await database.createSkaterStatsFile(skaterStatsArr);
+    await database.createGoaliesStatsFile(goalieStatsArr);
 };
 
-setInterval(async () => {
-    main();
-}, 1000 * 60 * 60 * 24);
+const pollingJob = setInterval(() => main(), 1000 * 60 * 60 * 24);
 
 main();
 
@@ -105,4 +107,10 @@ app.get('/goalies', async (req: Request, res: Response) => {
 
 app.listen(3000, () => {
     console.log(`Application listening at http://localhost:3000`);
+});
+
+process.on('exit', () => {
+    console.log('Cleaning up jobs...');
+    clearInterval(pollingJob);
+    console.log('Server shut down successfully');
 });

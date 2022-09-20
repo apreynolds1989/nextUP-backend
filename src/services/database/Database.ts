@@ -11,15 +11,15 @@ import {
 export interface Database {
     // CRUD => Create, Retrieve, Update, Delete
 
-    createWeeklyGamesFile: (datesArr: WeeklyGames[]) => void;
+    createWeeklyGamesFile: (datesArr: WeeklyGames[]) => Promise<void>;
     retrieveWeeklyGames: () => Promise<WeeklyGames[]>;
 
-    createTeamsSchedulesFile: (teamsSchedulesArr: TeamsSchedule[]) => void;
+    createTeamsSchedulesFile: (teamsSchedulesArr: TeamsSchedule[]) => Promise<void>;
     retrieveTeamsSchedules: () => Promise<TeamsSchedule[]>;
 
-    createSkaterStatsFile: (skatersStatsArr: SkaterStats[]) => void;
+    createSkaterStatsFile: (skatersStatsArr: SkaterStats[]) => Promise<void>;
     retrieveSkatersStats: () => Promise<SkaterStats[]>;
 
-    createGoaliesStatsFile: (goaliesStatsArr: GoalieStats[]) => void;
+    createGoaliesStatsFile: (goaliesStatsArr: GoalieStats[]) => Promise<void>;
     retrieveGoaliesStats: () => Promise<GoalieStats[]>;
 }
