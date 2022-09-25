@@ -115,8 +115,10 @@ app.get('/teamsSchedules', async (req: Request, res: Response) => {
     res.json(await database.retrieveTeamsSchedules());
 });
 
-app.listen(3000, () => {
-    console.log(`Application listening at http://localhost:3000`);
+const PORT = process.env.PORT;
+const URL = process.env.RAILWAY_STATIC_URL;
+app.listen(PORT, () => {
+    console.log(`Application listening at ${URL}:${PORT}`);
 });
 
 process.on('exit', () => {
