@@ -1,4 +1,5 @@
-import express, { Express, Request, Response, NextFunction } from 'express';
+import express, { Express, Request, Response } from 'express';
+import cors from 'cors';
 import { Database } from './services/database/Database';
 import {
     WeeklyGames,
@@ -93,16 +94,25 @@ main();
 
 app.use(loggerFunc);
 
-app.get('/', async (req: Request, res: Response) => {
-    res.send(await database.retrieveWeeklyGames());
+app.use(cors());
+
+app.get('/', (req: Request, res: Response) => {
+    res.json('Welcome to the nextUP server.');
+});
+
+app.get('/weeklyGames', async (req: Request, res: Response) => {
+    res.json(await database.retrieveWeeklyGames());
 });
 
 app.get('/skaters', async (req: Request, res: Response) => {
-    res.send(await database.retrieveSkatersStats());
+    res.json(await database.retrieveSkatersStats());
 });
 
 app.get('/goalies', async (req: Request, res: Response) => {
-    res.send(await database.retrieveGoaliesStats());
+    res.json(await database.retrieveGoaliesStats());
+});
+app.get('/teamsSchedules', async (req: Request, res: Response) => {
+    res.json(await database.retrieveTeamsSchedules());
 });
 
 app.listen(3000, () => {
