@@ -46,7 +46,7 @@ export const nhlApi: Apis = {
     async getPlayerStats(playerData) {
         return await axios
             .get(
-                `https://statsapi.web.nhl.com/api/v1/people/${playerData.id}/stats?stats=statsSingleSeason&season=20212022`
+                `https://statsapi.web.nhl.com/api/v1/people/${playerData.id}/stats?stats=statsSingleSeason&season=20222023`
             )
             .catch((err: AxiosError) => {
                 console.log(`ERROR at getPlayerStats: ${err} for ${playerData.name}`);

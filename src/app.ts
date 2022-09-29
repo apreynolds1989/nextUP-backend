@@ -10,7 +10,6 @@ import {
 } from './services/database/types';
 import { FileDatabase } from './services/database/FileDatabase';
 import { loggerFunc } from './middleware/Logger';
-// import { currentDate, endOfWeekDate } from './utilities/dates';
 import { nhlApi } from './services/apis/nhl';
 import { Apis } from './services/apis/Apis';
 import { createTeamsArr } from './utilities/createTeamsArr';
