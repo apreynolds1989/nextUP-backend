@@ -10,23 +10,30 @@ import {
 } from './services/database/types';
 import { FileDatabase } from './services/database/FileDatabase';
 import { loggerFunc } from './middleware/Logger';
-import { currentDate, endOfWeekDate } from './utilities/dates';
+// import { currentDate, endOfWeekDate } from './utilities/dates';
 import { nhlApi } from './services/apis/nhl';
 import { Apis } from './services/apis/Apis';
 import { createTeamsArr } from './utilities/createTeamsArr';
 import { createGamesArr } from './utilities/createGamesArr';
 import { createGoalieStats, createSkaterStats } from './utilities/generateStats';
 import { createTeamSchedulesArr } from './utilities/createTeamSchedulesArr';
+import { DateTime } from 'luxon';
 
 const app: Express = express();
-
+const luxDate = DateTime.now();
 const database: Database = FileDatabase;
 
 const main = async () => {
     const api: Apis = nhlApi;
+    const currentWeekday = luxDate.toFormat('cccc');
+    const currentDate = luxDate.toFormat("yyyy'-'LL'-'dd");
+    const endOfWeekDate = luxDate.endOf('week').toFormat("yyyy'-'LL'-'dd");
 
     // Get initial data from NHL api
-    const weeklyGamesResponse = await api.getWeeklyGames(currentDate, endOfWeekDate);
+    const weeklyGamesResponse =
+        currentWeekday === 'Sunday'
+            ? await api.getWeeklyGames(currentDate)
+            : await api.getWeeklyGames(currentDate, endOfWeekDate);
     const teamsResponse = await api.getTeamsInfo();
 
     // Format teamsInfo to create players Array
@@ -60,7 +67,7 @@ const main = async () => {
     const failedPlayersStatsResponseArr = playersStatsPromiseArr
         .filter((res): res is PromiseRejectedResult => res.status === 'rejected')
         .map((res) => res.reason);
-    console.log(failedPlayersStatsResponseArr);
+    console.log(`FAILED RESPONSES: ${failedPlayersStatsResponseArr}`);
 
     // Split playerStatsResponseArr into skatersStatsResponseArr and goaliesStatsResponseArr
     const skatersStatsResponseArr: StatsResponsePlayerData[] = [];

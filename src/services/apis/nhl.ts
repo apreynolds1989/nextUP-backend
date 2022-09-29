@@ -9,6 +9,7 @@ axiosRetry(axios, {
         console.log(`Request Config: ${requestConfig.url} -  Retry attempt # ${retryCount}`);
     },
 });
+
 // const api = axios.create({
 //     baseUrl: 'https://statsapi.web.nhl.com/api/v1/',
 // });
@@ -16,7 +17,15 @@ axiosRetry(axios, {
 // ? Error: connect ECONNREFUSED 127.0.0.1:80 at TCPConnectWrap.afterConnect [as oncomplete]
 
 export const nhlApi: Apis = {
-    async getWeeklyGames(date1, date2) {
+    async getWeeklyGames(date1, date2?) {
+        if (!date2) {
+            return await axios
+                .get(`https://statsapi.web.nhl.com/api/v1/schedule?date=${date1}`)
+                .catch((err: AxiosError) => {
+                    console.log(`ERROR at getWeeklyGames: ${err}`);
+                    return [];
+                });
+        }
         return await axios
             .get(`https://statsapi.web.nhl.com/api/v1/schedule?startDate=${date1}&endDate=${date2}`)
             .catch((err: AxiosError) => {
