@@ -4,7 +4,7 @@ import { WeeklyGames, GamesObj } from '../services/database/types';
 export const createGamesArr = (datesResponse: AxiosResponse) => {
     let gamesArr: WeeklyGames[] = [];
     let dates = datesResponse.data.dates;
-    dates.map((day: any) => {
+    dates.forEach((day: any) => {
         let games = day.games;
         let thisDaysGames: GamesObj[] = [];
         games.map((game: any) =>

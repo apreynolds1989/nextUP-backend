@@ -1,32 +1,26 @@
 import express, { Express, Request, Response } from 'express';
 import cors from 'cors';
-import { Database } from './services/database/Database';
-import {
-    WeeklyGames,
-    PlayerData,
-    SkaterStats,
-    GoalieStats,
-    StatsResponsePlayerData,
-} from './services/database/types';
-import { FileDatabase } from './services/database/FileDatabase';
+import { Database, FileDatabase, Types } from './services/database/';
 import { loggerFunc } from './middleware/Logger';
-import { nhlApi } from './services/apis/nhl';
-import { Apis } from './services/apis/Apis';
-import { createTeamsArr } from './utilities/createTeamsArr';
-import { createGamesArr } from './utilities/createGamesArr';
-import { createGoalieStats, createSkaterStats } from './utilities/generateStats';
-import { createTeamSchedulesArr } from './utilities/createTeamSchedulesArr';
+import { Apis, nhlApi } from './services/apis';
+import {
+    createTeamsArr,
+    createGamesArr,
+    createGoalieStats,
+    createSkaterStats,
+    createTeamSchedulesArr,
+} from './utilities';
 import { DateTime } from 'luxon';
 
 const app: Express = express();
-const luxDate = DateTime.now();
 const database: Database = FileDatabase;
 
 const main = async () => {
     const api: Apis = nhlApi;
-    const currentWeekday = luxDate.toFormat('cccc');
-    const currentDate = luxDate.toFormat("yyyy'-'LL'-'dd");
-    const endOfWeekDate = luxDate.endOf('week').toFormat("yyyy'-'LL'-'dd");
+    const now = DateTime.now();
+    const currentWeekday = now.toFormat('cccc');
+    const currentDate = now.toFormat("yyyy'-'LL'-'dd");
+    const endOfWeekDate = now.endOf('week').toFormat("yyyy'-'LL'-'dd");
 
     // Get initial data from NHL api
     const weeklyGamesResponse =
@@ -37,7 +31,7 @@ const main = async () => {
 
     // Format teamsInfo to create players Array
     const teamsArr = createTeamsArr(teamsResponse);
-    const playersArr: PlayerData[] = [];
+    const playersArr: Types.PlayerData[] = [];
     teamsArr.map((team) => {
         team.teamRoster.map((player) => playersArr.push(player));
     });
@@ -58,7 +52,7 @@ const main = async () => {
     );
     const playersStatsResponseArr = playersStatsPromiseArr
         .filter(
-            (res): res is PromiseFulfilledResult<StatsResponsePlayerData> =>
+            (res): res is PromiseFulfilledResult<Types.StatsResponsePlayerData> =>
                 res.status === 'fulfilled'
         )
         .map((res) => res.value);
@@ -69,8 +63,8 @@ const main = async () => {
     console.log(`FAILED RESPONSES: ${failedPlayersStatsResponseArr}`);
 
     // Split playerStatsResponseArr into skatersStatsResponseArr and goaliesStatsResponseArr
-    const skatersStatsResponseArr: StatsResponsePlayerData[] = [];
-    const goaliesStatsResponseArr: StatsResponsePlayerData[] = [];
+    const skatersStatsResponseArr: Types.StatsResponsePlayerData[] = [];
+    const goaliesStatsResponseArr: Types.StatsResponsePlayerData[] = [];
     playersStatsResponseArr.map((player) => {
         player.position === 'G'
             ? goaliesStatsResponseArr.push(player)
@@ -78,14 +72,20 @@ const main = async () => {
     });
 
     // Format weeklyGames to set up gamesArr
-    const gamesArr: WeeklyGames[] = createGamesArr(weeklyGamesResponse);
+    const gamesArr: Types.WeeklyGames[] = createGamesArr(weeklyGamesResponse);
 
     // Format teamsArr and gamesArr to set up Team's Schedules File
     const teamsSchedules = createTeamSchedulesArr(teamsArr, gamesArr);
 
     // Format response Arrays to create skatersStatsArr and goaliesStatsArr
-    const skaterStatsArr: SkaterStats[] = createSkaterStats(skatersStatsResponseArr, gamesArr);
-    const goalieStatsArr: GoalieStats[] = createGoalieStats(goaliesStatsResponseArr, gamesArr);
+    const skaterStatsArr: Types.SkaterStats[] = createSkaterStats(
+        skatersStatsResponseArr,
+        gamesArr
+    );
+    const goalieStatsArr: Types.GoalieStats[] = createGoalieStats(
+        goaliesStatsResponseArr,
+        gamesArr
+    );
 
     // Store it in our database
     await database.createWeeklyGamesFile(gamesArr);
