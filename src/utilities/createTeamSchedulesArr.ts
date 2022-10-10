@@ -1,9 +1,12 @@
-import { TeamsSchedule, TeamsInfo, WeeklyGames } from '../services/database/types';
+import { Types } from '../services/database';
 
 // Create an array of objects which contain the team name and their opponent on each day of the week
 // if they have no game on a given day, that day will contain an empty string
-export const createTeamSchedulesArr = (teamsArr: TeamsInfo[], gamesArr: WeeklyGames[]) => {
-    const teamSchedulesArr: TeamsSchedule[] = [];
+export const createTeamSchedulesArr = (
+    teamsArr: Types.TeamsInfo[],
+    gamesArr: Types.WeeklyGames[]
+) => {
+    const teamSchedulesArr: Types.TeamsSchedule[] = [];
 
     // map over the teams array to get each teams id
     teamsArr.map((team) => {

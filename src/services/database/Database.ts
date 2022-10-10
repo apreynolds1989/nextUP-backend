@@ -1,25 +1,17 @@
-import {
-    TeamsInfo,
-    PlayerData,
-    PlayerArrs,
-    SkaterStats,
-    GoalieStats,
-    WeeklyGames,
-    TeamsSchedule,
-} from './types';
+import { Types } from '.';
 
 export interface Database {
     // CRUD => Create, Retrieve, Update, Delete
 
-    createWeeklyGamesFile: (datesArr: WeeklyGames[]) => Promise<void>;
-    retrieveWeeklyGames: () => Promise<WeeklyGames[]>;
+    createWeeklyGamesFile: (datesArr: Types.WeeklyGames[]) => Promise<void>;
+    retrieveWeeklyGames: () => Promise<Types.WeeklyGames[]>;
 
-    createTeamsSchedulesFile: (teamsSchedulesArr: TeamsSchedule[]) => Promise<void>;
-    retrieveTeamsSchedules: () => Promise<TeamsSchedule[]>;
+    createTeamsSchedulesFile: (teamsSchedulesArr: Types.TeamsSchedule[]) => Promise<void>;
+    retrieveTeamsSchedules: () => Promise<Types.TeamsSchedule[]>;
 
-    createSkaterStatsFile: (skatersStatsArr: SkaterStats[]) => Promise<void>;
-    retrieveSkatersStats: () => Promise<SkaterStats[]>;
+    createSkaterStatsFile: (skatersStatsArr: Types.SkaterStats[]) => Promise<void>;
+    retrieveSkatersStats: () => Promise<Types.SkaterStats[]>;
 
-    createGoaliesStatsFile: (goaliesStatsArr: GoalieStats[]) => Promise<void>;
-    retrieveGoaliesStats: () => Promise<GoalieStats[]>;
+    createGoaliesStatsFile: (goaliesStatsArr: Types.GoalieStats[]) => Promise<void>;
+    retrieveGoaliesStats: () => Promise<Types.GoalieStats[]>;
 }

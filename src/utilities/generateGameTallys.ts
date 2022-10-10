@@ -1,6 +1,6 @@
-import { WeeklyGames } from '../services/database/types';
+import { Types } from '../services/database';
 
-export const generateWeeklyGamesTally = (datesArr: WeeklyGames[], teamNum: number) => {
+export const generateWeeklyGamesTally = (datesArr: Types.WeeklyGames[], teamNum: number) => {
     let playerGamesTally = 0;
     datesArr.map((date) => {
         date.games.map((game) => {
@@ -12,7 +12,7 @@ export const generateWeeklyGamesTally = (datesArr: WeeklyGames[], teamNum: numbe
     return playerGamesTally;
 };
 
-export const generateWeeklyOffDayGamesTally = (datesArr: WeeklyGames[], teamNum: number) => {
+export const generateWeeklyOffDayGamesTally = (datesArr: Types.WeeklyGames[], teamNum: number) => {
     let playerOffDayGamesTally = 0;
     datesArr.map((date, dateIndex) => {
         date.games.map((game) => {
