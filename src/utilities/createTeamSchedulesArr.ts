@@ -7,6 +7,7 @@ export const createTeamSchedulesArr = (
     gamesArr: Types.WeeklyGames[]
 ) => {
     const teamSchedulesArr: Types.TeamsSchedule[] = [];
+    // console.log(gamesArr);
 
     // map over the teams array to get each teams id
     teamsArr.map((team) => {
