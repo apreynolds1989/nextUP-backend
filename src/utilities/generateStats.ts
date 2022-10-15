@@ -8,14 +8,13 @@ export const createSkaterStats = (
     const skatersStatsArr = skatersArr.reduce(
         (playerArr: Types.SkaterStats[], currentPlayer, index) => {
             // console.log(`Logging: ${currentPlayer.name}`);
-            let teamId = currentPlayer.teamId;
-            let statsArr = currentPlayer.playerStats.data.stats[0].splits;
-            let results: Types.SkaterStats;
-            let weeklyGames = generateWeeklyGamesTally(gamesArr, teamId);
-            let weeklyOffDayGames = generateWeeklyOffDayGamesTally(gamesArr, teamId);
+            const teamId = currentPlayer.teamId;
+            const statsArr = currentPlayer.playerStats.data.stats[0].splits;
+            const weeklyGames = generateWeeklyGamesTally(gamesArr, teamId);
+            const weeklyOffDayGames = generateWeeklyOffDayGamesTally(gamesArr, teamId);
             if (statsArr.length > 0) {
-                let gamesPlayed = statsArr[0].stat.games;
-                results = {
+                const gamesPlayed = statsArr[0].stat.games;
+                const results = {
                     name: currentPlayer.name,
                     team: currentPlayer.teamAbrv,
                     gamesPlayed: gamesPlayed > 0 ? gamesPlayed : 0,
@@ -44,7 +43,7 @@ export const createSkaterStats = (
                 playerArr.push(results);
                 return playerArr;
             } else {
-                results = {
+                const results = {
                     name: currentPlayer.name,
                     team: currentPlayer.teamAbrv,
                     gamesPlayed: 0,
@@ -69,8 +68,8 @@ export const createSkaterStats = (
                     penaltyMinutes: 0,
                 };
                 playerArr.push(results);
+                return playerArr;
             }
-            return playerArr;
         },
         []
     );
@@ -84,14 +83,13 @@ export const createGoalieStats = (
     const goaliesStatsArr = goaliesArr.reduce(
         (playerArr: Types.GoalieStats[], currentPlayer, index) => {
             // console.log(`Logging: ${currentPlayer.name}`);
-            let teamId = currentPlayer.teamId;
-            let statsArr = currentPlayer.playerStats.data.stats[0].splits;
-            let results: Types.GoalieStats;
-            let weeklyGames = generateWeeklyGamesTally(gamesArr, teamId);
-            let weeklyOffDayGames = generateWeeklyOffDayGamesTally(gamesArr, teamId);
+            const teamId = currentPlayer.teamId;
+            const statsArr = currentPlayer.playerStats.data.stats[0].splits;
+            const weeklyGames = generateWeeklyGamesTally(gamesArr, teamId);
+            const weeklyOffDayGames = generateWeeklyOffDayGamesTally(gamesArr, teamId);
             if (statsArr.length > 0) {
-                let gamesPlayed = statsArr[0].stat.games;
-                results = {
+                const gamesPlayed = statsArr[0].stat.games;
+                const results = {
                     name: currentPlayer.name,
                     team: currentPlayer.teamAbrv,
                     weeklyGames: weeklyGames,
@@ -110,7 +108,7 @@ export const createGoalieStats = (
                 playerArr.push(results);
                 return playerArr;
             } else {
-                results = {
+                const results = {
                     name: currentPlayer.name,
                     team: currentPlayer.teamAbrv,
                     weeklyGames: weeklyGames,
@@ -129,7 +127,6 @@ export const createGoalieStats = (
                 playerArr.push(results);
                 return playerArr;
             }
-            return playerArr;
         },
         []
     );

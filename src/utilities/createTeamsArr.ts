@@ -2,11 +2,11 @@ import { AxiosResponse } from 'axios';
 import { Types } from '../services/database';
 
 export const createTeamsArr = (teamsResponse: AxiosResponse) => {
-    let teamsArr: Types.TeamsInfo[] = [];
-    let teamsData = teamsResponse.data.teams;
-    teamsData.map((team: any) => {
-        let thisRoster: Types.PlayerData[] = [];
-        team.roster.roster.map((player: any) =>
+    const teamsArr: Types.TeamsInfo[] = [];
+    const teamsData = teamsResponse.data.teams;
+    teamsData.forEach((team: any) => {
+        const thisRoster: Types.PlayerData[] = [];
+        team.roster.roster.forEach((player: any) =>
             thisRoster.push({
                 name: player.person.fullName,
                 id: player.person.id,

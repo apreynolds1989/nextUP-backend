@@ -16,11 +16,6 @@ axiosRetry(axios, {
 // ? The above was giving the following error:
 // ? Error: connect ECONNREFUSED 127.0.0.1:80 at TCPConnectWrap.afterConnect [as oncomplete]
 
-// YYYY-MM-DD
-type IsoDate = `${string}-${string}-${string}`;
-
-const bro: IsoDate = '2002-09-03';
-
 export const nhlApi: Apis = {
     async getWeeklyGames(date1, date2?) {
         if (!date2) {
@@ -31,7 +26,7 @@ export const nhlApi: Apis = {
                     return [];
                 });
         }
-        return await axios
+        return axios
             .get(`https://statsapi.web.nhl.com/api/v1/schedule?startDate=${date1}&endDate=${date2}`)
             .catch((err: AxiosError) => {
                 console.log(`ERROR at getWeeklyGames: ${err}`);
@@ -40,7 +35,7 @@ export const nhlApi: Apis = {
     },
 
     async getTeamsInfo() {
-        return await axios
+        return axios
             .get('https://statsapi.web.nhl.com/api/v1/teams?expand=team.roster')
             .catch((err: AxiosError) => {
                 console.log(`ERROR at getTeamsInfo: ${err}`);
@@ -49,7 +44,7 @@ export const nhlApi: Apis = {
     },
 
     async getPlayerStats(playerData) {
-        return await axios
+        return axios
             .get(
                 `https://statsapi.web.nhl.com/api/v1/people/${playerData.id}/stats?stats=statsSingleSeason&season=20222023`
             )

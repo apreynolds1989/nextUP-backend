@@ -21,9 +21,9 @@ export const createTeamSchedulesArr = (
         // if a game contains the team's id, store the opponent's id
         // map over the teamsArr again to get the opponent's name based on the id
         // return the opponent's name
-        gamesArr.map((day) => {
+        gamesArr.forEach((day) => {
             let opponentName: string = '';
-            day.games.map((game) => {
+            day.games.forEach((game) => {
                 const opponentId =
                     thisTeamsId === game.homeId
                         ? game.awayId
@@ -31,7 +31,7 @@ export const createTeamSchedulesArr = (
                         ? game.homeId
                         : null;
                 if (opponentId) {
-                    teamsArr.map((team) => {
+                    teamsArr.forEach((team) => {
                         if (team.teamId === opponentId) opponentName = team.locationName;
                     });
                 }

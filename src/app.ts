@@ -94,7 +94,26 @@ const main = async () => {
     await database.createGoaliesStatsFile(goalieStatsArr);
 };
 
-const pollingJob = setInterval(() => main(), 1000 * 60 * 60 * 24);
+const calculateTimeoutDelay = () => {
+    // Setting times in Eastern Standard Time to be consistent with NHL scheduling
+    const now = DateTime.now().setZone('America/New_York');
+    const currentTime = DateTime.now().setZone('America/New_York').toMillis();
+    const today = now.toFormat("yyyy'-'LL'-'dd");
+    const tomorrow = now.plus({ days: 1 }).toFormat("yyyy'-'LL'-'dd");
+    const todayAt4am = DateTime.fromISO(`${today}T04:00:00.000`, {
+        zone: 'America/New_York',
+    }).toMillis();
+    const tomorrowAt4am = DateTime.fromISO(`${tomorrow}T04:00:00.000`, {
+        zone: 'America/New_York',
+    }).toMillis();
+
+    return todayAt4am - currentTime >= 0 ? todayAt4am - currentTime : tomorrowAt4am - currentTime;
+};
+
+let pollingJob = setTimeout(() => {
+    main();
+    pollingJob = setInterval(main, 1000 * 60 * 60 * 24);
+}, calculateTimeoutDelay());
 
 main();
 
