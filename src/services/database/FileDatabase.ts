@@ -1,4 +1,4 @@
-import { ClassDatabase } from './Database';
+import { Database } from './Database';
 import { Types } from '.';
 import * as fs from 'fs/promises';
 import axiosRetry from 'axios-retry';
@@ -59,7 +59,7 @@ axiosRetry(axios, {
 //     },
 // };
 
-export class ClassFileDatabase extends ClassDatabase {
+export class FileDatabase extends Database {
     constructor() {
         super();
     }

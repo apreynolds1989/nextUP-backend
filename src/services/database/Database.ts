@@ -16,7 +16,7 @@ import { Types } from '.';
 //     retrieveGoaliesStats: () => Promise<Types.GoalieStats[]>;
 // }
 
-export abstract class ClassDatabase {
+export abstract class Database {
     abstract createWeeklyGamesFile(datesArr: Types.WeeklyGames[]): Promise<void>;
     abstract retrieveWeeklyGames(): Promise<Types.WeeklyGames[]>;
 
