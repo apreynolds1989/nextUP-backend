@@ -2,6 +2,7 @@ import { Database } from './Database';
 import { Types } from '.';
 import * as fs from 'fs/promises';
 import axiosRetry from 'axios-retry';
+import path from 'node:path';
 
 // Axios with axios-retry to ensure any API calls that fail, get called again
 // Without retry, sometimes random calls to the stats API fail
@@ -13,65 +14,24 @@ axiosRetry(axios, {
     },
 });
 
-// export const FileDatabase: Database = {
-//     async createWeeklyGamesFile(datesArr) {
-//         await fs
-//             .writeFile('src/dataFiles/weeklyGames.json', JSON.stringify(datesArr))
-//             .catch((err) => console.log(err));
-//     },
-
-//     async retrieveWeeklyGames() {
-//         const result = await fs.readFile('src/dataFiles/weeklyGames.json', 'utf8');
-//         return result ? JSON.parse(result) : [];
-//     },
-
-//     async createTeamsSchedulesFile(teamsSchedulesArr) {
-//         await fs
-//             .writeFile('src/dataFiles/teamsSchedules.json', JSON.stringify(teamsSchedulesArr))
-//             .catch((err) => console.log(err));
-//     },
-
-//     async retrieveTeamsSchedules() {
-//         const result = await fs.readFile('src/dataFiles/teamsSchedules.json', 'utf8');
-//         return result ? JSON.parse(result) : [];
-//     },
-
-//     async createSkaterStatsFile(skatersStatsArr) {
-//         await fs
-//             .writeFile('src/dataFiles/skatersStatsArr.json', JSON.stringify(skatersStatsArr))
-//             .catch((err) => console.log(err));
-//     },
-
-//     async retrieveSkatersStats() {
-//         const result = await fs.readFile('src/dataFiles/skatersStatsArr.json', 'utf8');
-//         return result ? JSON.parse(result) : [];
-//     },
-
-//     async createGoaliesStatsFile(goaliesStatsArr) {
-//         await fs
-//             .writeFile('src/dataFiles/goaliesStatsArr.json', JSON.stringify(goaliesStatsArr))
-//             .catch((err) => console.log(err));
-//     },
-
-//     async retrieveGoaliesStats() {
-//         const result = await fs.readFile('src/dataFiles/goaliesStatsArr.json', 'utf8');
-//         return result ? JSON.parse(result) : [];
-//     },
-// };
-
 export class FileDatabase extends Database {
-    constructor() {
+    dir: string;
+
+    private WEEKLY_GAME_FILE = 'weeklyGames.json';
+
+    constructor(dir: string) {
         super();
+        this.dir = dir;
     }
 
     async createWeeklyGamesFile(datesArr: Types.WeeklyGames[]) {
         await fs
-            .writeFile('src/dataFiles/weeklyGames.json', JSON.stringify(datesArr))
+            .writeFile(path.join(this.dir, this.WEEKLY_GAME_FILE), JSON.stringify(datesArr))
             .catch((err) => console.log(err));
     }
 
     async retrieveWeeklyGames() {
-        const result = await fs.readFile('src/dataFiles/weeklyGames.json', 'utf8');
+        const result = await fs.readFile(path.join(this.dir, this.WEEKLY_GAME_FILE), 'utf8');
         return result ? JSON.parse(result) : [];
     }
 

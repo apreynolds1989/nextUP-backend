@@ -13,7 +13,7 @@ import {
 import { DateTime } from 'luxon';
 
 const app: Express = express();
-const database: Database = new FileDatabase();
+const database: Database = new FileDatabase('./src/dataFiles');
 
 const main = async () => {
     const api: Apis = nhlApi;
