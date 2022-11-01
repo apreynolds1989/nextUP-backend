@@ -18,6 +18,9 @@ export class FileDatabase extends Database {
     dir: string;
 
     private WEEKLY_GAME_FILE = 'weeklyGames.json';
+    private TEAMS_SCHEDULE_FILE = 'teamsSchedules.json';
+    private SKATERS_STATS_ARRAY_FILE = 'skatersStatsArr.json';
+    private GOALIES_STATS_ARRAY_FILE = 'goaliesStatsArr.json';
 
     constructor(dir: string) {
         super();
@@ -37,34 +40,49 @@ export class FileDatabase extends Database {
 
     async createTeamsSchedulesFile(teamsSchedulesArr: Types.TeamsSchedule[]) {
         await fs
-            .writeFile('src/dataFiles/teamsSchedules.json', JSON.stringify(teamsSchedulesArr))
+            .writeFile(
+                path.join(this.dir, this.TEAMS_SCHEDULE_FILE),
+                JSON.stringify(teamsSchedulesArr)
+            )
             .catch((err) => console.log(err));
     }
 
     async retrieveTeamsSchedules() {
-        const result = await fs.readFile('src/dataFiles/teamsSchedules.json', 'utf8');
+        const result = await fs.readFile(path.join(this.dir, this.TEAMS_SCHEDULE_FILE), 'utf8');
         return result ? JSON.parse(result) : [];
     }
 
     async createSkaterStatsFile(skatersStatsArr: Types.SkaterStats[]) {
         await fs
-            .writeFile('src/dataFiles/skatersStatsArr.json', JSON.stringify(skatersStatsArr))
+            .writeFile(
+                path.join(this.dir, this.SKATERS_STATS_ARRAY_FILE),
+                JSON.stringify(skatersStatsArr)
+            )
             .catch((err) => console.log(err));
     }
 
     async retrieveSkatersStats() {
-        const result = await fs.readFile('src/dataFiles/skatersStatsArr.json', 'utf8');
+        const result = await fs.readFile(
+            path.join(this.dir, this.SKATERS_STATS_ARRAY_FILE),
+            'utf8'
+        );
         return result ? JSON.parse(result) : [];
     }
 
     async createGoaliesStatsFile(goaliesStatsArr: Types.GoalieStats[]) {
         await fs
-            .writeFile('src/dataFiles/goaliesStatsArr.json', JSON.stringify(goaliesStatsArr))
+            .writeFile(
+                path.join(this.dir, this.GOALIES_STATS_ARRAY_FILE),
+                JSON.stringify(goaliesStatsArr)
+            )
             .catch((err) => console.log(err));
     }
 
     async retrieveGoaliesStats() {
-        const result = await fs.readFile('src/dataFiles/goaliesStatsArr.json', 'utf8');
+        const result = await fs.readFile(
+            path.join(this.dir, this.GOALIES_STATS_ARRAY_FILE),
+            'utf8'
+        );
         return result ? JSON.parse(result) : [];
     }
 }
