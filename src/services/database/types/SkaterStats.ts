@@ -10,8 +10,8 @@ export interface SkaterStats {
     gameWinningGoals: number;
     pointsPerGame: number;
     timeOnIcePerGame: string;
-    powerPlayerGoals: number;
-    powerPlayerPoints: number;
+    powerPlayGoals: number;
+    powerPlayPoints: number;
     powerPlayTimeOnIcePerGame: string;
     shortHandedGoals: number;
     shortHandedPoints: number;
