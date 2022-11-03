@@ -27,6 +27,10 @@ export class FileDatabase extends Database {
         this.dir = dir;
     }
 
+    connect() {
+        console.log('Hello World');
+    }
+
     async createWeeklyGamesFile(datesArr: Types.WeeklyGames[]) {
         await fs
             .writeFile(path.join(this.dir, this.WEEKLY_GAME_FILE), JSON.stringify(datesArr))

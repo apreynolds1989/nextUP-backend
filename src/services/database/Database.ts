@@ -1,7 +1,7 @@
 import { Types } from '.';
 
 export abstract class Database {
-    // abstract connect(): any;
+    abstract connect(): any;
 
     abstract createWeeklyGamesFile(datesArr: Types.WeeklyGames[]): Promise<void>;
     abstract retrieveWeeklyGames(): Promise<Types.WeeklyGames[]>;

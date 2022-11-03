@@ -1,6 +1,6 @@
 import express, { Express, Request, Response } from 'express';
 import cors from 'cors';
-import { Database, FileDatabase, Types } from './services/database/';
+import { instance, Types } from './services/database/';
 import { loggerFunc } from './middleware/Logger';
 import { Apis, nhlApi } from './services/apis';
 import {
@@ -13,7 +13,6 @@ import {
 import { DateTime } from 'luxon';
 
 const app: Express = express();
-const database: Database = new FileDatabase('./src/dataFiles');
 
 const main = async () => {
     const api: Apis = nhlApi;
@@ -87,11 +86,11 @@ const main = async () => {
         gamesArr
     );
 
-    // Store it in our database
-    await database.createWeeklyGamesFile(gamesArr);
-    await database.createTeamsSchedulesFile(teamsSchedules);
-    await database.createSkaterStatsFile(skaterStatsArr);
-    await database.createGoaliesStatsFile(goalieStatsArr);
+    // Store it in our instance
+    await instance.createWeeklyGamesFile(gamesArr);
+    await instance.createTeamsSchedulesFile(teamsSchedules);
+    await instance.createSkaterStatsFile(skaterStatsArr);
+    await instance.createGoaliesStatsFile(goalieStatsArr);
 };
 
 const calculateTimeoutDelay = () => {
@@ -126,22 +125,22 @@ app.get('/', (req: Request, res: Response) => {
 });
 
 app.get('/weeklyGames', async (req: Request, res: Response) => {
-    res.json(await database.retrieveWeeklyGames());
+    res.json(await instance.retrieveWeeklyGames());
 });
 
 app.get('/skaters', async (req: Request, res: Response) => {
-    res.json(await database.retrieveSkatersStats());
+    res.json(await instance.retrieveSkatersStats());
 });
 
 app.get('/goalies', async (req: Request, res: Response) => {
-    res.json(await database.retrieveGoaliesStats());
+    res.json(await instance.retrieveGoaliesStats());
 });
 app.get('/teamsSchedules', async (req: Request, res: Response) => {
-    res.json(await database.retrieveTeamsSchedules());
+    res.json(await instance.retrieveTeamsSchedules());
 });
 
-const PORT = process.env.PORT;
-const URL = process.env.RAILWAY_STATIC_URL;
+const PORT = process.env.PORT ?? 3001;
+const URL = process.env.RAILWAY_STATIC_URL ?? 'http://localhost';
 app.listen(PORT, () => {
     console.log(`Application listening at ${URL}:${PORT}`);
 });
