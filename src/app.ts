@@ -87,10 +87,10 @@ const main = async () => {
     );
 
     // Store it in our instance
-    await instance.createWeeklyGamesFile(gamesArr);
-    await instance.createTeamsSchedulesFile(teamsSchedules);
-    await instance.createSkaterStatsFile(skaterStatsArr);
-    await instance.createGoaliesStatsFile(goalieStatsArr);
+    await instance.createWeeklyGames(gamesArr);
+    await instance.createTeamsSchedules(teamsSchedules);
+    await instance.createSkaterStats(skaterStatsArr);
+    await instance.createGoaliesStats(goalieStatsArr);
 };
 
 const calculateTimeoutDelay = () => {

@@ -31,7 +31,7 @@ export class FileDatabase extends Database {
         console.log('Hello World');
     }
 
-    async createWeeklyGamesFile(datesArr: Types.WeeklyGames[]) {
+    async createWeeklyGames(datesArr: Types.WeeklyGames[]) {
         await fs
             .writeFile(path.join(this.dir, this.WEEKLY_GAME_FILE), JSON.stringify(datesArr))
             .catch((err) => console.log(err));
@@ -42,7 +42,7 @@ export class FileDatabase extends Database {
         return result ? JSON.parse(result) : [];
     }
 
-    async createTeamsSchedulesFile(teamsSchedulesArr: Types.TeamsSchedule[]) {
+    async createTeamsSchedules(teamsSchedulesArr: Types.TeamsSchedule[]) {
         await fs
             .writeFile(
                 path.join(this.dir, this.TEAMS_SCHEDULE_FILE),
@@ -56,7 +56,7 @@ export class FileDatabase extends Database {
         return result ? JSON.parse(result) : [];
     }
 
-    async createSkaterStatsFile(skatersStatsArr: Types.SkaterStats[]) {
+    async createSkaterStats(skatersStatsArr: Types.SkaterStats[]) {
         await fs
             .writeFile(
                 path.join(this.dir, this.SKATERS_STATS_ARRAY_FILE),
@@ -73,7 +73,7 @@ export class FileDatabase extends Database {
         return result ? JSON.parse(result) : [];
     }
 
-    async createGoaliesStatsFile(goaliesStatsArr: Types.GoalieStats[]) {
+    async createGoaliesStats(goaliesStatsArr: Types.GoalieStats[]) {
         await fs
             .writeFile(
                 path.join(this.dir, this.GOALIES_STATS_ARRAY_FILE),
