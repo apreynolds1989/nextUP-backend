@@ -6,8 +6,10 @@ const func = async () => {
         username: 'postgres',
         password: '',
     });
-    const foo = await sql`insert into test(id, name) values(1, 'Andrew') returning *`;
-    console.log(JSON.stringify(foo));
+    const columns = ['date', 'time', 'home_id', 'home_name', 'away_id', 'away_name'];
+    console.log(`columns: ${columns}`);
+    const retrieveWeeklyGames = await sql`select ${sql(columns)} from weekly_games`;
+    console.log(retrieveWeeklyGames);
 };
 
 func();
